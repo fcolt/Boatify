@@ -22,7 +22,8 @@
         "react-native-force": "git+https://github.com/forcedotcom/SalesforceMobileSDK-ReactNative.git#dev",
         "react-native-gesture-handler": "^1.10.3",
         "react-native-safe-area-context": "^3.3.0",
-        "react-native-screens": "^3.6.0"
+        "react-native-screens": "^3.6.0",
+        "react-native-snap-carousel": "^3.9.1"
     },
     "devDependencies": {
         "@babel/core": "^7.12.9",

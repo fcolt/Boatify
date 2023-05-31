@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Text, View, FlatList } from "react-native";
 import { oauth, net } from "react-native-force";
 import { Button } from "@react-native-material/core";
@@ -28,48 +28,41 @@ const styles = StyleSheet.create({
   },
 });
 
-export class BoatListScreen extends React.Component<Props, BoatState> {
-  constructor(props: Props) {
-    super(props);
-    this.state = { data: [] };
-  }
+export default function BoatList() {
+  const [state, setState] = useState<BoatState>();
 
-  componentDidMount() {
-    const that = this;
+  useEffect(() => {
     oauth.getAuthCredentials(
-      () => that.fetchData(),
+      () => fetchData(),
       () => {
         oauth.authenticate(
-          () => that.fetchData(),
+          () => fetchData(),
           (error) => console.log("Failed to authenticate:" + error)
         );
       }
     );
-  }
+  }, []);
 
-  fetchData() {
-    const that = this;
+  const fetchData = () => {
     net.query(
       "SELECT Name FROM Boat__c LIMIT 100",
-      (response: Response) => that.setState({ data: response.records }),
+      (response: Response) => setState({ data: response.records }),
       (error) => console.log("Failed to query:" + error)
     );
-  }
+  };
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <FlatList
-          data={this.state.data}
-          renderItem={({ item }) => (
-            <>
-              <Text style={styles.item}>{item.Name}</Text>
-              <Button title="Click me"/>
-            </>
-          )}
-          keyExtractor={(_, index) => "key_" + index}
-        />
-      </View>
-    );
-  }
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={state?.data}
+        renderItem={({ item }) => (
+          <>
+            <Text style={styles.item}>{item.Name}</Text>
+            <Button title="Click me" />
+          </>
+        )}
+        keyExtractor={(_, index) => "key_" + index}
+      />
+    </View>
+  );
 }
