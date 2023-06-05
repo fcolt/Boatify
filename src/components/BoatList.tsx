@@ -28,20 +28,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function BoatList() {
+const BoatList = () => {
   const [state, setState] = useState<BoatState>();
 
-  useEffect(() => {
-    oauth.getAuthCredentials(
-      () => fetchData(),
-      () => {
-        oauth.authenticate(
-          () => fetchData(),
-          (error) => console.log("Failed to authenticate:" + error)
-        );
-      }
-    );
-  }, []);
+  useEffect(() => fetchData(), []);
 
   const fetchData = () => {
     net.query(
@@ -66,3 +56,5 @@ export default function BoatList() {
     </View>
   );
 }
+
+export default BoatList;

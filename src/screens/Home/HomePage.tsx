@@ -1,26 +1,46 @@
 import React, { useState } from "react";
-import { Button, Text, Snackbar } from "@react-native-material/core";
+import { StyleSheet } from "react-native";
+import { Text, Surface } from "react-native-paper";
 import { oauth } from "react-native-force";
-import { Alert } from "react-native";
+import { Appbar } from "react-native-paper";
+import CarouselCards from "../../components/CarouselCards";
 
-interface LogoutState {
-  success: boolean;
-  message: String;
-}
-
-export default function HomePage() {
+const HomePage = () => {
   const logout = () => {
     oauth.logout(
-      () => {},
+      () => { },
       (error) => console.log(error.message)
     );
   };
 
   return (
     <>
-      <Text variant="h3">Welcome to Boatify!</Text>
-      <Text variant="h5">An app inspired by the Salesforce LWC Superbadge</Text>
-      <Button title="Logout" onPress={logout}></Button>
+      {/* <Appbar.Header>
+        <Appbar.BackAction onPress={() => { }} />
+        <Appbar.Content title="Title" />
+        <Appbar.Action icon="calendar" onPress={() => { }} />
+        <Appbar.Action icon="magnify" onPress={() => { }} />
+      </Appbar.Header> */}
+      <Surface
+        elevation={5}
+        style={styles.surface}
+      >
+        <Text variant="titleLarge">Welcome to Boatify!</Text>
+        <Text variant="labelMedium">An app inspired by the Salesforce LWC Superbadge</Text>
+        <Surface elevation={4}>
+          <CarouselCards/>
+        </Surface>
+      </Surface>
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  surface: {
+    padding: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+
+export default HomePage;

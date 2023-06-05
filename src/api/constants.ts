@@ -1,0 +1,1 @@
+export const ORGANIZATION_URL = 'https://wise-fox-wc417x-dev-ed.trailblaze.lightning.force.com';
