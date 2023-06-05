@@ -19,7 +19,7 @@ export function AuthProvider({ children }: PropsWithChildren<any>) {
     getAccessToken()
       .then(res => setAccessToken(res))
       .catch(err => console.log(err));
-  }, [])
+  }, []);
 
   return (
     <AuthContext.Provider value={{ accessToken, setAccessToken }}>

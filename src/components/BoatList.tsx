@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Text, View, FlatList } from "react-native";
-import { oauth, net } from "react-native-force";
+import { net } from "react-native-force";
 import { Button } from "@react-native-material/core";
 import { StyleSheet } from "react-native";
 import { Boat } from "../models/boat";

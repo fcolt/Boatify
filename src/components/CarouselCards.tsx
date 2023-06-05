@@ -1,15 +1,24 @@
-import React from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import CarouselCardItem, { SLIDER_WIDTH, ITEM_WIDTH } from './CarouselCardItem';
 import { Surface } from 'react-native-paper';
 import data from '../../assets/data';
+import { getAccessToken } from '../util/SFUtil';
+import React from 'react';
 
 const NO_OF_DEMO_ITEMS = 10;
 const shuffled = data.sort(() => 0.5 - Math.random()).slice(0, NO_OF_DEMO_ITEMS);
 
 const CarouselCards = () => {
-	const [index, setIndex] = React.useState(0)
-	const isCarousel = React.useRef(null)
+	const [index, setIndex] = useState(0);
+	const [accessToken, setAccessToken] = useState('');
+	const isCarousel = useRef(null)
+
+	useEffect(() => {
+    getAccessToken()
+      .then((res) => setAccessToken(res))
+      .catch(err => console.log(err));
+  }, [])
 
 	return (
 		<Surface elevation={3}>
@@ -18,7 +27,7 @@ const CarouselCards = () => {
 				layoutCardOffset={9}
 				ref={isCarousel}
 				data={shuffled}
-				renderItem={item => <CarouselCardItem item={item.item} index={index}/>}
+				renderItem={item => <CarouselCardItem item={item.item} index={index} authToken={accessToken}/>}
 				sliderWidth={SLIDER_WIDTH}
 				itemWidth={ITEM_WIDTH}
 				onSnapToItem={(index) => setIndex(index)}
