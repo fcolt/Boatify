@@ -1,19 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Text, View, FlatList } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Text, View, FlatList, ActivityIndicator, RefreshControl } from "react-native";
 import { net } from "react-native-force";
-import { Button } from "@react-native-material/core";
 import { StyleSheet } from "react-native";
 import { Boat } from "../models/boat";
-
-interface Response {
-  records: Boat[];
-}
-
-interface Props {}
-
-interface BoatState {
-  data: Boat[];
-}
+import { GET_BOATS_ENDPOINT } from "../api/constants";
+import { MAX_RECORDS_PER_VIEW } from "../api/constants";
 
 const styles = StyleSheet.create({
   container: {
@@ -28,33 +19,76 @@ const styles = StyleSheet.create({
   },
 });
 
-const BoatList = () => {
-  const [state, setState] = useState<BoatState>();
+const BoatList = (boatTypeId: string) => {
+  const [state, setState] = useState<Boat[]>();
+  const [offset, setOffset] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => fetchData(), []);
+  const previousBoats = useRef<Boat[]>();
 
-  const fetchData = () => {
-    net.query(
-      "SELECT Name FROM Boat__c LIMIT 100",
-      (response: Response) => setState({ data: response.records }),
-      (error) => console.log("Failed to query:" + error)
+  useEffect(() => {
+    previousBoats.current = state;
+    fetchData(MAX_RECORDS_PER_VIEW, offset);
+  }, [offset, refreshing]);
+
+  const fetchData = (maxRecords: number, offset: number) => {
+    net.sendRequest(
+      "/services/apexrest",
+      `${GET_BOATS_ENDPOINT}?maxRecords=${maxRecords}&offset=${offset}`,
+      (res: string) => {
+        const parsedRes = JSON.parse(res);
+
+        if (refreshing) {
+          previousBoats.current = {} as Boat[];
+          setState(parsedRes);
+          setOffset(0);
+          setRefreshing(false);
+        }
+
+        else if (!refreshing && parsedRes.length) {
+          setState(
+            previousBoats.current && Array.isArray(previousBoats.current)
+              ? previousBoats.current!.concat(parsedRes)
+              : parsedRes
+          );
+        }
+        setLoading(false);
+      },
+      (err) => {console.log(err.message)},
+      "GET"
     );
   };
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={state?.data}
-        renderItem={({ item }) => (
-          <>
-            <Text style={styles.item}>{item.Name}</Text>
-            <Button title="Click me" />
-          </>
-        )}
-        keyExtractor={(_, index) => "key_" + index}
-      />
+      {loading ? (
+        <ActivityIndicator color="blue" />
+      ) : (
+        <FlatList
+          data={state}
+          renderItem={({ item }) => (
+            <>
+              <Text style={styles.item}>{item.Name}</Text>
+            </>
+          )}
+          keyExtractor={(_, index) => "key_" + index}
+          onEndReached={() => {
+            setOffset(offset + MAX_RECORDS_PER_VIEW);
+          }}
+          refreshControl={
+            <RefreshControl 
+              colors={["blue"]}
+              refreshing={refreshing} 
+              onRefresh={() => {
+                setRefreshing(true);
+                setState({} as Boat[]);
+            }} />
+          }
+        />
+      )}
     </View>
   );
-}
+};
 
 export default BoatList;

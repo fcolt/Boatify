@@ -8,6 +8,11 @@ import IonIcon from "react-native-vector-icons/Ionicons";
 import AppBar from "./src/components/AppBar";
 import { PaperProvider } from "react-native-paper";
 
+const routes = {
+  homeScreen: "Home",
+  boatsScreen: "Boats"
+}
+
 const Tab = createBottomTabNavigator();
 
 export const App = function () {
@@ -27,14 +32,14 @@ export const App = function () {
     <PaperProvider>
       <NavigationContainer>
         <Tab.Navigator
-          initialRouteName="Home"
+          initialRouteName={routes.homeScreen}
           screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, color, size }) => {
               let iconName = "";
 
-              if (route.name === "Home") {
+              if (route.name === routes.homeScreen) {
                 iconName = focused ? "home" : "home-outline";
-              } else if (route.name === "Boat Screen") {
+              } else if (route.name === routes.boatsScreen) {
                 iconName = focused ? "boat" : "boat-outline";
               }
 
@@ -45,8 +50,8 @@ export const App = function () {
             tabBarInactiveTintColor: "gray",
           })}
         >
-          <Tab.Screen name="Home" component={HomePage} />
-          <Tab.Screen name="Boat Screen" component={BoatList} />
+          <Tab.Screen name={routes.homeScreen} component={HomePage} />
+          <Tab.Screen name={routes.boatsScreen} component={BoatList} />
         </Tab.Navigator>
       </NavigationContainer>
     </PaperProvider>

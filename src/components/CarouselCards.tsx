@@ -2,16 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import CarouselCardItem, { SLIDER_WIDTH, ITEM_WIDTH } from "./CarouselCardItem";
 import { ActivityIndicator } from "react-native-paper";
-import data from "../../assets/data";
 import { getAccessToken } from "../util/SFUtil";
 import React from "react";
 import { Boat } from "../models/boat";
 import { View } from "react-native";
+import { net } from "react-native-force";
+import { QueryResult } from "../models/queryResult";
 
 const NO_OF_DEMO_ITEMS = 10;
-const shuffled: Boat[] = data
-  .sort(() => 0.5 - Math.random())
-  .slice(0, NO_OF_DEMO_ITEMS);
+const RANDOM_OFFSET = Math.floor(Math.random() * NO_OF_DEMO_ITEMS);
 
 const CarouselCards = () => {
   const [loading, setLoading] = useState(true);
@@ -24,10 +23,14 @@ const CarouselCards = () => {
     getAccessToken()
       .then((res) => setAccessToken(res))
       .catch((err) => console.log(err));
-    setTimeout(() => {
-      setDemoData(shuffled);
-      setLoading(false);
-    }, 1000);
+		net.query(
+			`SELECT Name, Description__c, Picture__c FROM Boat__c LIMIT ${NO_OF_DEMO_ITEMS} OFFSET ${RANDOM_OFFSET}`,
+			(res: QueryResult<Boat>) => {
+				setDemoData(res.records);
+				setLoading(false);
+			},
+			(err) => console.log(err.message)
+		);
   }, []);
 
   return (
@@ -56,7 +59,7 @@ const CarouselCards = () => {
             autoplay={true}
           />
           <Pagination
-            dotsLength={shuffled.length}
+            dotsLength={demoData!.length}
             activeDotIndex={index}
             carouselRef={isCarousel}
             dotStyle={{

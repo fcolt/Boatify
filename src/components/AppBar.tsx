@@ -4,10 +4,7 @@ import { getHeaderTitle } from "@react-navigation/elements";
 import { BottomTabHeaderProps } from "@react-navigation/bottom-tabs";
 import { net, oauth } from "react-native-force";
 import { User } from "../models/user";
-
-interface UserQueryResult {
-  records: User[];
-}
+import { QueryResult } from "../models/queryResult";
 
 const AppBar = ({ route, options, navigation }: BottomTabHeaderProps) => {
   const title = getHeaderTitle(options, route.name);
@@ -24,7 +21,7 @@ const AppBar = ({ route, options, navigation }: BottomTabHeaderProps) => {
         setAccessToken(res.accessToken);
         net.query(
           `SELECT SmallPhotoUrl FROM User WHERE Id = \'${res.userId}\'`,
-          (res: UserQueryResult) => setProfilePic(res.records[0].SmallPhotoUrl),
+          (res: QueryResult<User>) => setProfilePic(res.records[0].SmallPhotoUrl),
           (err) => console.log(err.message)
         );
       },
