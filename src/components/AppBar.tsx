@@ -5,12 +5,15 @@ import { BottomTabHeaderProps } from "@react-navigation/bottom-tabs";
 import { net, oauth } from "react-native-force";
 import { User } from "../models/user";
 import { QueryResult } from "../models/queryResult";
+import { useAuthContext } from "../context/AuthContext";
+import SampleImage from '../../assets/Sample_User_Icon.png';
+import { Image } from 'react-native';
 
 const AppBar = ({ route, options, navigation }: BottomTabHeaderProps) => {
   const title = getHeaderTitle(options, route.name);
   const [visible, setVisible] = useState(false);
-  const [accessToken, setAccessToken] = useState("");
-  const [profilePic, setProfilePic] = useState("");
+  const { accessToken } = useAuthContext();
+  const [profilePic, setProfilePic] = useState<string>(Image.resolveAssetSource(SampleImage).uri);
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -18,7 +21,6 @@ const AppBar = ({ route, options, navigation }: BottomTabHeaderProps) => {
   useEffect(() => {
     oauth.getAuthCredentials(
       (res) => {
-        setAccessToken(res.accessToken);
         net.query(
           `SELECT SmallPhotoUrl FROM User WHERE Id = \'${res.userId}\'`,
           (res: QueryResult<User>) => setProfilePic(res.records[0].SmallPhotoUrl),

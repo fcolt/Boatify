@@ -5,6 +5,7 @@ import { StyleSheet } from "react-native";
 import { Boat } from "../models/boat";
 import { GET_BOATS_ENDPOINT } from "../api/constants";
 import { MAX_RECORDS_PER_VIEW } from "../api/constants";
+import BoatCard from "./BoatCard";
 
 const styles = StyleSheet.create({
   container: {
@@ -19,7 +20,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const BoatList = (boatTypeId: string) => {
+const BoatList = () => {
   const [state, setState] = useState<Boat[]>();
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(true);

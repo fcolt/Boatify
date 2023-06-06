@@ -1,7 +1,12 @@
-import { PropsWithChildren, createContext, useContext, useEffect, useState } from 'react';
+import React, { PropsWithChildren, createContext, useContext, useEffect, useState } from 'react';
 import { getAccessToken } from '../util/SFUtil';
 
-export const AuthContext = createContext('');
+interface Props {
+  accessToken: string,
+  setAccessToken: React.Dispatch<React.SetStateAction<string>>
+}
+
+export const AuthContext = createContext<Props>({} as Props);
 
 export function useAuthContext() {
   const context = useContext(AuthContext);

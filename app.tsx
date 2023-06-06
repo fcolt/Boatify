@@ -7,11 +7,12 @@ import { oauth } from "react-native-force";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import AppBar from "./src/components/AppBar";
 import { PaperProvider } from "react-native-paper";
+import { AuthProvider } from "./src/context/AuthContext";
 
 const routes = {
   homeScreen: "Home",
-  boatsScreen: "Boats"
-}
+  boatsScreen: "Boats",
+};
 
 const Tab = createBottomTabNavigator();
 
@@ -30,30 +31,34 @@ export const App = function () {
 
   return (
     <PaperProvider>
-      <NavigationContainer>
-        <Tab.Navigator
-          initialRouteName={routes.homeScreen}
-          screenOptions={({ route }) => ({
-            tabBarIcon: ({ focused, color, size }) => {
-              let iconName = "";
+      <AuthProvider>
+        <NavigationContainer>
+          <Tab.Navigator
+            initialRouteName={routes.homeScreen}
+            screenOptions={({ route }) => ({
+              tabBarIcon: ({ focused, color, size }) => {
+                let iconName = "";
 
-              if (route.name === routes.homeScreen) {
-                iconName = focused ? "home" : "home-outline";
-              } else if (route.name === routes.boatsScreen) {
-                iconName = focused ? "boat" : "boat-outline";
-              }
+                if (route.name === routes.homeScreen) {
+                  iconName = focused ? "home" : "home-outline";
+                } else if (route.name === routes.boatsScreen) {
+                  iconName = focused ? "boat" : "boat-outline";
+                }
 
-              return <IonIcon name={iconName} size={size} color={color} />;
-            },
-            header: (props) => <AppBar {...props} />,
-            tabBarActiveTintColor: "blue",
-            tabBarInactiveTintColor: "gray",
-          })}
-        >
-          <Tab.Screen name={routes.homeScreen} component={HomePage} />
-          <Tab.Screen name={routes.boatsScreen} component={BoatList} />
-        </Tab.Navigator>
-      </NavigationContainer>
+                return <IonIcon name={iconName} size={size} color={color} />;
+              },
+              header: (props) => <AppBar {...props} />,
+              tabBarActiveTintColor: "blue",
+              tabBarInactiveTintColor: "gray",
+            })}
+          >
+            <Tab.Screen name={routes.homeScreen} component={HomePage} />
+            <Tab.Screen name={routes.boatsScreen}>
+              {() => (<BoatList/>)}
+            </Tab.Screen>
+          </Tab.Navigator>
+        </NavigationContainer>
+      </AuthProvider>
     </PaperProvider>
   );
 };

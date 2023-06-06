@@ -8,6 +8,7 @@ import { Boat } from "../models/boat";
 import { View } from "react-native";
 import { net } from "react-native-force";
 import { QueryResult } from "../models/queryResult";
+import { useAuthContext } from "../context/AuthContext";
 
 const NO_OF_DEMO_ITEMS = 10;
 const RANDOM_OFFSET = Math.floor(Math.random() * NO_OF_DEMO_ITEMS);
@@ -16,13 +17,10 @@ const CarouselCards = () => {
   const [loading, setLoading] = useState(true);
   const [demoData, setDemoData] = useState<Boat[]>();
   const [index, setIndex] = useState(0);
-  const [accessToken, setAccessToken] = useState("");
+  const { accessToken } = useAuthContext();
   const isCarousel = useRef(null);
 
   useEffect(() => {
-    getAccessToken()
-      .then((res) => setAccessToken(res))
-      .catch((err) => console.log(err));
 		net.query(
 			`SELECT Name, Description__c, Picture__c FROM Boat__c LIMIT ${NO_OF_DEMO_ITEMS} OFFSET ${RANDOM_OFFSET}`,
 			(res: QueryResult<Boat>) => {
