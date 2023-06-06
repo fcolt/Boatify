@@ -1,4 +1,6 @@
-const data = [
+import { Boat } from "../src/models/boat";
+
+const data: Boat[] = [
   {
     "attributes": {
       "type": "Boat__c",

@@ -55,12 +55,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     paddingLeft: 20,
     paddingTop: 20,
+    flexWrap: "wrap"
   },
   body: {
     color: "#222",
     fontSize: 18,
     paddingLeft: 20,
-    paddingRight: 20,
+    paddingRight: 20
   },
 });
 

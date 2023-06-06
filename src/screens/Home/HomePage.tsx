@@ -1,8 +1,7 @@
 import React from "react";
-import { StyleSheet } from "react-native";
-import { Text, Surface, Avatar } from "react-native-paper";
+import { StyleSheet, View } from "react-native";
+import { Text, Surface } from "react-native-paper";
 import { oauth } from "react-native-force";
-import { Appbar } from "react-native-paper";
 import CarouselCards from "../../components/CarouselCards";
 
 const HomePage = () => {
@@ -20,9 +19,9 @@ const HomePage = () => {
         <Text variant="labelMedium">
           An app inspired by the Salesforce LWC Superbadge
         </Text>
-        <Surface elevation={4}>
+        <View style={styles.surface}>
           <CarouselCards />
-        </Surface>
+        </View>
       </Surface>
     </>
   );
@@ -30,7 +29,7 @@ const HomePage = () => {
 
 const styles = StyleSheet.create({
   surface: {
-    padding: 30,
+    padding: 25,
     alignItems: "center",
     justifyContent: "center",
   },
