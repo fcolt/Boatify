@@ -27,6 +27,7 @@ const BoatList = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalPicture, setModalPicture] = useState(PLACEHOLDER_MODAL_IMAGE);
+  const [endReached, setEndReached] = useState(false);
 
   const previousBoats = useRef<Boat[]>();
 
@@ -36,8 +37,9 @@ const BoatList = () => {
       previousBoats.current = {} as Boat[];
       setState([] as Boat[]);
       setOffset(0);
+      setEndReached(false);
       setRefreshing(false);
-    } else {
+    } else if (!endReached){
       fetchData(MAX_RECORDS_PER_VIEW, offset);
     }
   }, [offset, refreshing]);
@@ -48,8 +50,13 @@ const BoatList = () => {
       `${GET_BOATS_ENDPOINT}?maxRecords=${maxRecords}&offset=${offset}`,
       (res: string) => {
         const parsedRes = JSON.parse(res);
+        
+        if (parsedRes.length === 0) {
+          setEndReached(true);
+          return;
+        }
 
-        if (!refreshing && parsedRes.length) {
+        if (!refreshing) {
           setState(
             previousBoats.current && Array.isArray(previousBoats.current)
               ? previousBoats.current!.concat(parsedRes)
@@ -80,9 +87,11 @@ const BoatList = () => {
           )}
           keyExtractor={(_, index) => "key_" + index}
           onEndReached={() => {
-            setOffset(offset + MAX_RECORDS_PER_VIEW);
+            if (!endReached) {
+              setOffset(offset + MAX_RECORDS_PER_VIEW);
+            }
           }}
-          ListFooterComponent={() => <ProgressBar indeterminate />}
+          ListFooterComponent={() => <ProgressBar visible={!endReached} indeterminate />}
           refreshControl={
             <RefreshControl
               colors={["blue"]}

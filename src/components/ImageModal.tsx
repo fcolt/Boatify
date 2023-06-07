@@ -5,11 +5,12 @@ import {
   TouchableWithoutFeedback,
   StyleSheet,
   Image,
-  Share
+  Share,
 } from "react-native";
 import { Portal, Modal, IconButton } from "react-native-paper";
 import { PlaceholderJpg } from "../../assets";
 import { useAuthContext } from "../context/AuthContext";
+import { ReactNativeZoomableView } from "@openspacelabs/react-native-zoomable-view";
 
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const WINDOW_HEIGHT = Dimensions.get("window").height;
@@ -36,27 +37,29 @@ const ImageModal = ({
       >
         <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
           <View style={styles.modalContainer}>
-            <Image
-              style={styles.image}
-              defaultSource={{ uri: PLACEHOLDER_MODAL_IMAGE }}
-              source={{
-                uri: modalPicture,
-                headers: {
-                  Authorization: `Bearer ${accessToken}`,
-                },
-              }}
-            />
+            <ReactNativeZoomableView>
+              <Image
+                style={styles.image}
+                defaultSource={{ uri: PLACEHOLDER_MODAL_IMAGE }}
+                source={{
+                  uri: modalPicture,
+                  headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                  },
+                }}
+              />
+            </ReactNativeZoomableView>
             <IconButton
               icon="share"
+              size={40}
               onPress={async () => {
                 try {
-                  const res = Share.share({
-                    message: modalPicture, 
+                  Share.share({
+                    message: modalPicture,
                     url: modalPicture,
-                    title: modalPicture
+                    title: modalPicture,
                   });
-                }
-                catch (err: any) {
+                } catch (err: any) {
                   console.log(err.message);
                 }
               }}

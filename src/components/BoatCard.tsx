@@ -1,6 +1,6 @@
-import { Button, Card, Portal, Text } from "react-native-paper";
+import { Button, Card, Text } from "react-native-paper";
 import { Boat } from "../models/boat";
-import React, { useState } from "react";
+import React from "react";
 import { ORGANIZATION_URL } from "../api/constants";
 import { useAuthContext } from "../context/AuthContext";
 import { StyleSheet, TouchableNativeFeedback } from "react-native";

@@ -5,7 +5,7 @@ import HomePage from "./src/screens/Home/HomePage";
 import { oauth } from "react-native-force";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import AppBar from "./src/components/AppBar";
-import { PaperProvider } from "react-native-paper";
+import { DefaultTheme, PaperProvider } from "react-native-paper";
 import { AuthProvider } from "./src/context/AuthContext";
 import BoatScreen from "./src/screens/Boats/BoatPage";
 
@@ -15,6 +15,16 @@ const routes = {
 };
 
 const Tab = createBottomTabNavigator();
+
+const theme = {
+  ...DefaultTheme,
+  roundness: 2,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: "#3498db",
+    accent: "#f1c40f",
+  },
+};
 
 export const App = function () {
   useEffect(() => {
@@ -30,7 +40,7 @@ export const App = function () {
   }, []);
 
   return (
-    <PaperProvider>
+    <PaperProvider theme={theme}>
       <AuthProvider>
         <NavigationContainer>
           <Tab.Navigator
@@ -53,13 +63,7 @@ export const App = function () {
             })}
           >
             <Tab.Screen name={routes.homeScreen} component={HomePage} />
-            <Tab.Screen 
-              name={routes.boatsScreen} 
-              component={BoatScreen}
-              options={{
-                unmountOnBlur: true
-              }} 
-            />
+            <Tab.Screen name={routes.boatsScreen} component={BoatScreen} />
           </Tab.Navigator>
         </NavigationContainer>
       </AuthProvider>
