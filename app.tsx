@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import BoatList from "./src/components/BoatList";
 import HomePage from "./src/screens/Home/HomePage";
 import { oauth } from "react-native-force";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import AppBar from "./src/components/AppBar";
 import { PaperProvider } from "react-native-paper";
 import { AuthProvider } from "./src/context/AuthContext";
+import BoatScreen from "./src/screens/Boats/BoatPage";
 
 const routes = {
   homeScreen: "Home",
@@ -53,9 +53,13 @@ export const App = function () {
             })}
           >
             <Tab.Screen name={routes.homeScreen} component={HomePage} />
-            <Tab.Screen name={routes.boatsScreen}>
-              {() => (<BoatList/>)}
-            </Tab.Screen>
+            <Tab.Screen 
+              name={routes.boatsScreen} 
+              component={BoatScreen}
+              options={{
+                unmountOnBlur: true
+              }} 
+            />
           </Tab.Navigator>
         </NavigationContainer>
       </AuthProvider>

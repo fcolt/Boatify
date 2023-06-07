@@ -1,11 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Text, View, FlatList, ActivityIndicator, RefreshControl } from "react-native";
+import {
+  View,
+  FlatList,
+  ActivityIndicator,
+  RefreshControl,
+} from "react-native";
 import { net } from "react-native-force";
 import { StyleSheet } from "react-native";
 import { Boat } from "../models/boat";
 import { GET_BOATS_ENDPOINT } from "../api/constants";
 import { MAX_RECORDS_PER_VIEW } from "../api/constants";
 import BoatCard from "./BoatCard";
+import { ProgressBar } from "react-native-paper";
 
 const styles = StyleSheet.create({
   container: {
@@ -30,7 +36,14 @@ const BoatList = () => {
 
   useEffect(() => {
     previousBoats.current = state;
-    fetchData(MAX_RECORDS_PER_VIEW, offset);
+    if (refreshing) {
+      previousBoats.current = {} as Boat[];
+      setState({} as Boat[]);
+      setOffset(0);
+      setRefreshing(false);
+    } else {
+      fetchData(MAX_RECORDS_PER_VIEW, offset);
+    }
   }, [offset, refreshing]);
 
   const fetchData = (maxRecords: number, offset: number) => {
@@ -40,14 +53,7 @@ const BoatList = () => {
       (res: string) => {
         const parsedRes = JSON.parse(res);
 
-        if (refreshing) {
-          previousBoats.current = {} as Boat[];
-          setState(parsedRes);
-          setOffset(0);
-          setRefreshing(false);
-        }
-
-        else if (!refreshing && parsedRes.length) {
+        if (!refreshing && parsedRes.length) {
           setState(
             previousBoats.current && Array.isArray(previousBoats.current)
               ? previousBoats.current!.concat(parsedRes)
@@ -56,7 +62,9 @@ const BoatList = () => {
         }
         setLoading(false);
       },
-      (err) => {console.log(err.message)},
+      (err) => {
+        console.log(err.message);
+      },
       "GET"
     );
   };
@@ -70,21 +78,20 @@ const BoatList = () => {
           data={state}
           renderItem={({ item }) => (
             <>
-              <Text style={styles.item}>{item.Name}</Text>
+              <BoatCard {...item} />
             </>
           )}
           keyExtractor={(_, index) => "key_" + index}
           onEndReached={() => {
             setOffset(offset + MAX_RECORDS_PER_VIEW);
           }}
+          ListFooterComponent={() => <ProgressBar indeterminate />}
           refreshControl={
-            <RefreshControl 
+            <RefreshControl
               colors={["blue"]}
-              refreshing={refreshing} 
-              onRefresh={() => {
-                setRefreshing(true);
-                setState({} as Boat[]);
-            }} />
+              refreshing={refreshing}
+              onRefresh={() => setRefreshing(true)}
+            />
           }
         />
       )}
