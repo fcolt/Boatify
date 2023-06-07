@@ -37,7 +37,7 @@ const ImageModal = ({
       >
         <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
           <View style={styles.modalContainer}>
-            <ReactNativeZoomableView>
+            <ReactNativeZoomableView onSingleTap={() => setShowModal(false)}>
               <Image
                 style={styles.image}
                 defaultSource={{ uri: PLACEHOLDER_MODAL_IMAGE }}

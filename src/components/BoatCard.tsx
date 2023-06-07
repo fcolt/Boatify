@@ -47,7 +47,7 @@ const BoatCard = ({ item, setShowModal, setModalPicture }: BoatCardProps) => {
             <Button onPress={() => console.log("pressed")}>
               Rate this boat
             </Button>
-            <Button style={{ marginLeft: "auto" }}>Details</Button>
+            <Button style={{ marginLeft: "auto", marginTop: 25, marginBottom: 25 }}>Details</Button>
           </Card.Actions>
         </Card.Content>
       </TouchableNativeFeedback>

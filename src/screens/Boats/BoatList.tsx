@@ -8,49 +8,64 @@ import {
 } from "react-native";
 import { net } from "react-native-force";
 import { StyleSheet, Image } from "react-native";
-import { Boat } from "../models/boat";
-import { GET_BOATS_ENDPOINT } from "../api/constants";
-import { MAX_RECORDS_PER_VIEW } from "../api/constants";
-import BoatCard from "./BoatCard";
+import { Boat } from "../../models/boat";
+import { GET_BOATS_ENDPOINT } from "../../api/constants";
+import { MAX_RECORDS_PER_VIEW } from "../../api/constants";
+import BoatCard from "../../components/BoatCard";
 import { ProgressBar } from "react-native-paper";
-import { PlaceholderJpg } from "../../assets";
-import ImageModal from "./ImageModal";
+import { PlaceholderJpg } from "../../../assets";
+import ImageModal from "../../components/ImageModal";
+import BoatFilter from "./BoatFilter";
 
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const PLACEHOLDER_MODAL_IMAGE = Image.resolveAssetSource(PlaceholderJpg).uri;
 
-const BoatList = () => {
+interface BoatListProps {
+  boatType: string;
+  setBoatType: React.Dispatch<React.SetStateAction<string>>;
+  refreshing: boolean;
+  setRefreshing: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const BoatList = ({
+  boatType,
+  setBoatType,
+  refreshing,
+  setRefreshing,
+}: BoatListProps) => {
   const [state, setState] = useState<Boat[]>();
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalPicture, setModalPicture] = useState(PLACEHOLDER_MODAL_IMAGE);
   const [endReached, setEndReached] = useState(false);
-
   const previousBoats = useRef<Boat[]>();
 
   useEffect(() => {
     previousBoats.current = state;
     if (refreshing) {
       previousBoats.current = {} as Boat[];
-      setState([] as Boat[]);
+      setState([]);
       setOffset(0);
       setEndReached(false);
       setRefreshing(false);
-    } else if (!endReached){
-      fetchData(MAX_RECORDS_PER_VIEW, offset);
+    } else if (!endReached) {
+      fetchData(MAX_RECORDS_PER_VIEW, offset);;
     }
   }, [offset, refreshing]);
 
   const fetchData = (maxRecords: number, offset: number) => {
+    let boatTypeIdParam = "";
+    if (boatType) {
+      boatTypeIdParam = `boatTypeId=${boatType}&`;
+    }
     net.sendRequest(
       "/services/apexrest",
-      `${GET_BOATS_ENDPOINT}?maxRecords=${maxRecords}&offset=${offset}`,
+      `${GET_BOATS_ENDPOINT}?${boatTypeIdParam}maxRecords=${maxRecords}&offset=${offset}`,
       (res: string) => {
         const parsedRes = JSON.parse(res);
-        
+
         if (parsedRes.length === 0) {
           setEndReached(true);
           return;
@@ -75,31 +90,38 @@ const BoatList = () => {
   return (
     <View style={styles.container}>
       <ImageModal {...{ showModal, setShowModal, modalPicture }} />
-      {loading ? (
+      {loading || refreshing ? (
         <ActivityIndicator color="blue" />
       ) : (
-        <FlatList
-          data={state}
-          renderItem={({ item }) => (
-            <>
-              <BoatCard {...{ item, setShowModal, setModalPicture }} />
-            </>
-          )}
-          keyExtractor={(_, index) => "key_" + index}
-          onEndReached={() => {
-            if (!endReached) {
-              setOffset(offset + MAX_RECORDS_PER_VIEW);
+        <>
+          <BoatFilter
+            {...{ boatType, setBoatType, refreshing, setRefreshing }}
+          />
+          <FlatList
+            data={state}
+            renderItem={({ item }) => (
+              <>
+                <BoatCard {...{ item, setShowModal, setModalPicture }} />
+              </>
+            )}
+            keyExtractor={(_, index) => "key_" + index}
+            onEndReached={() => {
+              if (!endReached) {
+                setOffset(offset + MAX_RECORDS_PER_VIEW);
+              }
+            }}
+            ListFooterComponent={() => (
+              <ProgressBar visible={!endReached} indeterminate />
+            )}
+            refreshControl={
+              <RefreshControl
+                colors={["blue"]}
+                refreshing={refreshing}
+                onRefresh={() => setRefreshing(true)}
+              />
             }
-          }}
-          ListFooterComponent={() => <ProgressBar visible={!endReached} indeterminate />}
-          refreshControl={
-            <RefreshControl
-              colors={["blue"]}
-              refreshing={refreshing}
-              onRefresh={() => setRefreshing(true)}
-            />
-          }
-        />
+          />
+        </>
       )}
     </View>
   );

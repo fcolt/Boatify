@@ -1,10 +1,15 @@
-import React, { useEffect } from "react";
-import BoatList from "../../components/BoatList";
+import React, { useState } from "react";
+import BoatList from "./BoatList";
+import BoatFilter from "./BoatFilter";
+import { View } from "react-native";
 
 const BoatScreen = () => {
+  const [boatType, setBoatType] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
+
   return (
     <>
-      <BoatList />
+      <BoatList {...{ boatType, setBoatType, refreshing, setRefreshing }} />
     </>
   );
 };
