@@ -4,33 +4,29 @@ import {
   FlatList,
   ActivityIndicator,
   RefreshControl,
+  Dimensions,
 } from "react-native";
 import { net } from "react-native-force";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Image } from "react-native";
 import { Boat } from "../models/boat";
 import { GET_BOATS_ENDPOINT } from "../api/constants";
 import { MAX_RECORDS_PER_VIEW } from "../api/constants";
 import BoatCard from "./BoatCard";
 import { ProgressBar } from "react-native-paper";
+import { PlaceholderJpg } from "../../assets";
+import ImageModal from "./ImageModal";
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 22,
-    backgroundColor: "white",
-  },
-  item: {
-    padding: 10,
-    fontSize: 18,
-    height: 44,
-  },
-});
+const WINDOW_WIDTH = Dimensions.get("window").width;
+const WINDOW_HEIGHT = Dimensions.get("window").height;
+const PLACEHOLDER_MODAL_IMAGE = Image.resolveAssetSource(PlaceholderJpg).uri;
 
 const BoatList = () => {
   const [state, setState] = useState<Boat[]>();
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modalPicture, setModalPicture] = useState(PLACEHOLDER_MODAL_IMAGE);
 
   const previousBoats = useRef<Boat[]>();
 
@@ -38,7 +34,7 @@ const BoatList = () => {
     previousBoats.current = state;
     if (refreshing) {
       previousBoats.current = {} as Boat[];
-      setState({} as Boat[]);
+      setState([] as Boat[]);
       setOffset(0);
       setRefreshing(false);
     } else {
@@ -71,6 +67,7 @@ const BoatList = () => {
 
   return (
     <View style={styles.container}>
+      <ImageModal {...{ showModal, setShowModal, modalPicture }} />
       {loading ? (
         <ActivityIndicator color="blue" />
       ) : (
@@ -78,7 +75,7 @@ const BoatList = () => {
           data={state}
           renderItem={({ item }) => (
             <>
-              <BoatCard {...item} />
+              <BoatCard {...{ item, setShowModal, setModalPicture }} />
             </>
           )}
           keyExtractor={(_, index) => "key_" + index}
@@ -98,5 +95,28 @@ const BoatList = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 22,
+    backgroundColor: "white",
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  image: {
+    width: WINDOW_WIDTH,
+    height: WINDOW_HEIGHT * 0.75,
+    resizeMode: "contain",
+  },
+});
 
 export default BoatList;

@@ -3,20 +3,30 @@ import { Boat } from "../models/boat";
 import React, { useState } from "react";
 import { ORGANIZATION_URL } from "../api/constants";
 import { useAuthContext } from "../context/AuthContext";
-import { Modal, StyleSheet, TouchableNativeFeedback, View } from "react-native";
+import { StyleSheet, TouchableNativeFeedback } from "react-native";
 
-const BoatCard = (boat: Boat) => {
+interface BoatCardProps {
+  item: Boat;
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setModalPicture: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const BoatCard = ({ item, setShowModal, setModalPicture }: BoatCardProps) => {
   const { accessToken } = useAuthContext();
-  const [showPictureModal, setShowPictureModal] = useState(false);
 
   return (
     <Card style={styles.container}>
-      <TouchableNativeFeedback onPress={() => setShowPictureModal(true)}>
+      <TouchableNativeFeedback
+        onPress={() => {
+          setShowModal(true);
+          setModalPicture(ORGANIZATION_URL + item.Picture__c);
+        }}
+      >
         <Card.Cover
           source={{
-            uri: ORGANIZATION_URL + boat.Picture__c,
+            uri: ORGANIZATION_URL + item.Picture__c,
             headers: {
-              Authorization: `Bearer ${accessToken}`,
+              Authorization: `Bearer ${accessToken}`
             },
           }}
         />
@@ -28,10 +38,10 @@ const BoatCard = (boat: Boat) => {
             numberOfLines={2}
             style={{ marginTop: 15 }}
           >
-            {boat.Name}
+            {item.Name}
           </Text>
           <Text variant="bodyMedium" numberOfLines={3}>
-            {boat.Description__c}
+            {item.Description__c}
           </Text>
           <Card.Actions>
             <Button onPress={() => console.log("pressed")}>

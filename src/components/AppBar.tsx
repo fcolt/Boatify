@@ -9,11 +9,13 @@ import { useAuthContext } from "../context/AuthContext";
 import SampleImage from '../../assets/Sample_User_Icon.png';
 import { Image } from 'react-native';
 
+const PLACEHOLDER_AVATAR = Image.resolveAssetSource(SampleImage).uri
+
 const AppBar = ({ route, options, navigation }: BottomTabHeaderProps) => {
   const title = getHeaderTitle(options, route.name);
   const [visible, setVisible] = useState(false);
   const { accessToken } = useAuthContext();
-  const [profilePic, setProfilePic] = useState<string>(Image.resolveAssetSource(SampleImage).uri);
+  const [profilePic, setProfilePic] = useState(PLACEHOLDER_AVATAR);
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
