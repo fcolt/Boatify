@@ -12,7 +12,7 @@ export function useAuthContext() {
   const context = useContext(AuthContext);
 
   if (context === undefined) {
-    throw Error('We do not seem to be inside the provider');
+    throw Error('We do not seem to be inside the Auth provider');
   }
 
   return context;

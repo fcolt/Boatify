@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { Text, Surface } from "react-native-paper";
+import { Text } from "react-native-paper";
 import { oauth } from "react-native-force";
 import CarouselCards from "../../components/CarouselCards";
 

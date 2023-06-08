@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   Dimensions,
+  Button,
 } from "react-native";
 import { net } from "react-native-force";
 import { StyleSheet, Image } from "react-native";
@@ -16,6 +17,7 @@ import { ProgressBar } from "react-native-paper";
 import { PlaceholderJpg } from "../../../assets";
 import ImageModal from "../../components/ImageModal";
 import BoatFilter from "./BoatFilter";
+import { useTopScrollContext } from "../../context/TopScrollContext";
 
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const WINDOW_HEIGHT = Dimensions.get("window").height;
@@ -41,7 +43,8 @@ const BoatList = ({
   const [modalPicture, setModalPicture] = useState(PLACEHOLDER_MODAL_IMAGE);
   const [endReached, setEndReached] = useState(false);
   const previousBoats = useRef<Boat[]>();
-
+  const { flatListRef } = useTopScrollContext();
+  
   useEffect(() => {
     previousBoats.current = state;
     if (refreshing) {
@@ -51,7 +54,7 @@ const BoatList = ({
       setEndReached(false);
       setRefreshing(false);
     } else if (!endReached) {
-      fetchData(MAX_RECORDS_PER_VIEW, offset);;
+      fetchData(MAX_RECORDS_PER_VIEW, offset);
     }
   }, [offset, refreshing]);
 
@@ -98,6 +101,7 @@ const BoatList = ({
             {...{ boatType, setBoatType, refreshing, setRefreshing }}
           />
           <FlatList
+            ref={flatListRef}
             data={state}
             renderItem={({ item }) => (
               <>

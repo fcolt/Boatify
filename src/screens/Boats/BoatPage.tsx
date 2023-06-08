@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import BoatList from "./BoatList";
-import BoatFilter from "./BoatFilter";
-import { View } from "react-native";
 
-const BoatScreen = () => {
+function BoatScreen({ navigation }:  any) {
   const [boatType, setBoatType] = useState("");
   const [refreshing, setRefreshing] = useState(false);
 
@@ -12,6 +10,6 @@ const BoatScreen = () => {
       <BoatList {...{ boatType, setBoatType, refreshing, setRefreshing }} />
     </>
   );
-};
+}
 
 export default BoatScreen;
