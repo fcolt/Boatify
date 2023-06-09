@@ -13,14 +13,7 @@ import { useTopScrollContext } from "../context/TopScrollContext";
 import NotFound from "../errors/NotFound";
 import ServerError from "../errors/ServerError";
 import Buggy from "../errors/Buggy";
-
-export const routes = {
-  homeScreen: "Home",
-  boatsScreen: "Boats",
-  notFoundScreen: "Not Found",
-  serverErrorScreen: "Server Error",
-  buggyScreen: "Buggy Screen"
-};
+import { ROUTES as routes } from "../api/constants";
 
 const Tab = createBottomTabNavigator();
 
@@ -83,13 +76,13 @@ export default function BottomTabNavigation() {
             switch (route.name) {
               case routes.homeScreen:
                 iconName = focused ? "home" : "home-outline";
-              break;
+                break;
               case routes.boatsScreen:
                 iconName = focused ? "boat" : "boat-outline";
-              break;
+                break;
               case routes.buggyScreen:
                 iconName = focused ? "md-bug" : "ios-bug-outline";
-              break;
+                break;
             }
 
             return (

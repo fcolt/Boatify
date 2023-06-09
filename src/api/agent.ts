@@ -5,7 +5,8 @@ import { QueryResult } from "../models/queryResult";
 import { User } from "../models/user";
 import { Boat } from "../models/boat";
 import Snackbar from "react-native-snackbar";
-import { navigate, routes } from "../components/BottomTabNavigation";
+import { navigate } from "../components/BottomTabNavigation";
+import { ROUTES as routes } from "./constants";
 
 export const handleError = (err: any) => {
   switch (err.response.statusCode) {
