@@ -8,6 +8,7 @@ import { QueryResult } from "../models/queryResult";
 import { useAuthContext } from "../context/AuthContext";
 import SampleImage from '../../assets/Sample_User_Icon.png';
 import { Image } from 'react-native';
+import agent from "../api/agent";
 
 const PLACEHOLDER_AVATAR = Image.resolveAssetSource(SampleImage).uri
 
@@ -23,13 +24,12 @@ const AppBar = ({ route, options, navigation }: BottomTabHeaderProps) => {
   useEffect(() => {
     oauth.getAuthCredentials(
       (res) => {
-        net.query(
-          `SELECT SmallPhotoUrl FROM User WHERE Id = \'${res.userId}\'`,
-          (res: QueryResult<User>) => setProfilePic(res.records[0].SmallPhotoUrl),
-          (err) => console.log(err.message)
-        );
+        agent.UserAccount.getProfilePic(
+          res.userId,
+          (res) => setProfilePic(res.records[0].SmallPhotoUrl) 
+        )
       },
-      (err) => console.log(err.message)
+      (err) => console.log('Failed to get authentication credentials: ' + err)
     );
   }, []);
 

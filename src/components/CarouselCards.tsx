@@ -2,13 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import CarouselCardItem, { SLIDER_WIDTH, ITEM_WIDTH } from "./CarouselCardItem";
 import { ActivityIndicator } from "react-native-paper";
-import { getAccessToken } from "../util/SFUtil";
 import React from "react";
 import { Boat } from "../models/boat";
 import { View } from "react-native";
-import { net } from "react-native-force";
-import { QueryResult } from "../models/queryResult";
 import { useAuthContext } from "../context/AuthContext";
+import agent from "../api/agent";
 
 const NO_OF_DEMO_ITEMS = 10;
 const RANDOM_OFFSET = Math.floor(Math.random() * NO_OF_DEMO_ITEMS);
@@ -21,14 +19,10 @@ const CarouselCards = () => {
   const isCarousel = useRef(null);
 
   useEffect(() => {
-		net.query(
-			`SELECT Name, Description__c, Picture__c FROM Boat__c LIMIT ${NO_OF_DEMO_ITEMS} OFFSET ${RANDOM_OFFSET}`,
-			(res: QueryResult<Boat>) => {
-				setDemoData(res.records);
-				setLoading(false);
-			},
-			(err) => console.log(err.message)
-		);
+    agent.Boats.getDemoBoatCardsInfo(NO_OF_DEMO_ITEMS, RANDOM_OFFSET, (res) => {
+      setDemoData(res.records);
+      setLoading(false);
+    });
   }, []);
 
   return (

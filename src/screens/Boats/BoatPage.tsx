@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import BoatList from "./BoatList";
 
-function BoatScreen({ navigation }:  any) {
+function BoatScreen() {
   const [boatType, setBoatType] = useState("");
   const [refreshing, setRefreshing] = useState(false);
 

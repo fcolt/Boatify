@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, FlatList } from "react-native";
-import { net } from "react-native-force";
-import { GET_BOAT_TYPES_ENDPOINT } from "../../api/constants";
 import { Chip } from "react-native-paper";
 import { BoatType } from "../../models/boatType";
+import agent from '../../api/agent';
 
 interface BoatFilterProps {
   boatType: string;
@@ -15,23 +14,9 @@ interface BoatFilterProps {
 const BoatFilter = ({ boatType, setBoatType, setRefreshing }: BoatFilterProps) => {
   const [boatTypes, setBoatTypes] = useState<BoatType[]>([]);
 
-  const fetchBoatTypes = () => {
-    net.sendRequest(
-      "/services/apexrest",
-      GET_BOAT_TYPES_ENDPOINT,
-      (res: string) => {
-        setBoatTypes(JSON.parse(res));
-      },
-      (err) => {
-        console.log(err.message);
-      },
-      "GET"
-    );
-  }
-
   useEffect(() => {
     if (!boatTypes.length) {
-      fetchBoatTypes();
+      agent.Boats.getBoatTypes((res: string) => setBoatTypes(JSON.parse(res)));
     }
   }, []);
 

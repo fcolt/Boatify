@@ -18,6 +18,7 @@ import { PlaceholderJpg } from "../../../assets";
 import ImageModal from "../../components/ImageModal";
 import BoatFilter from "./BoatFilter";
 import { useTopScrollContext } from "../../context/TopScrollContext";
+import agent from "../../api/agent";
 
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const WINDOW_HEIGHT = Dimensions.get("window").height;
@@ -44,7 +45,7 @@ const BoatList = ({
   const [endReached, setEndReached] = useState(false);
   const previousBoats = useRef<Boat[]>();
   const { flatListRef } = useTopScrollContext();
-  
+
   useEffect(() => {
     previousBoats.current = state;
     if (refreshing) {
@@ -63,10 +64,11 @@ const BoatList = ({
     if (boatType) {
       boatTypeIdParam = `boatTypeId=${boatType}&`;
     }
-    net.sendRequest(
-      "/services/apexrest",
-      `${GET_BOATS_ENDPOINT}?${boatTypeIdParam}maxRecords=${maxRecords}&offset=${offset}`,
-      (res: string) => {
+    agent.Boats.getPaginatedBoats(
+      boatTypeIdParam,
+      maxRecords,
+      offset,
+      (res) => {
         const parsedRes = JSON.parse(res);
 
         if (parsedRes.length === 0) {
@@ -82,11 +84,7 @@ const BoatList = ({
           );
         }
         setLoading(false);
-      },
-      (err) => {
-        console.log(err.message);
-      },
-      "GET"
+      }
     );
   };
 

@@ -6,7 +6,6 @@ import AppBar from "../components/AppBar";
 import BoatScreen from "../screens/Boats/BoatPage";
 import { Animated, Easing } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { oauth } from "react-native-force";
 import { useTopScrollContext } from "../context/TopScrollContext";
 
 const Tab = createBottomTabNavigator();
@@ -19,7 +18,6 @@ const routes = {
 export default function BottomTabNavigation() {
   const shakeAnimation = useRef(new Animated.Value(0)).current;
   const { toTop } = useTopScrollContext();
-
   const startShake = () => {
     Animated.sequence([
       Animated.timing(shakeAnimation, {
@@ -54,17 +52,8 @@ export default function BottomTabNavigation() {
 
   useEffect(() => {
     startShake();
-    oauth.getAuthCredentials(
-      () => {},
-      () => {
-        oauth.authenticate(
-          () => {},
-          (error) => console.log("Failed to authenticate:" + error)
-        );
-      }
-    );
   }, []);
-  
+
   return (
     <NavigationContainer>
       <Tab.Navigator
