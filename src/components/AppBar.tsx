@@ -2,13 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Appbar, Avatar, Menu } from "react-native-paper";
 import { getHeaderTitle } from "@react-navigation/elements";
 import { BottomTabHeaderProps } from "@react-navigation/bottom-tabs";
-import { net, oauth } from "react-native-force";
-import { User } from "../models/user";
-import { QueryResult } from "../models/queryResult";
+import { oauth } from "react-native-force";
 import { useAuthContext } from "../context/AuthContext";
 import SampleImage from '../../assets/Sample_User_Icon.png';
 import { Image } from 'react-native';
-import agent from "../api/agent";
+import agent, { handleError } from "../api/agent";
 
 const PLACEHOLDER_AVATAR = Image.resolveAssetSource(SampleImage).uri
 
@@ -63,7 +61,7 @@ const AppBar = ({ route, options, navigation }: BottomTabHeaderProps) => {
           onPress={() =>
             oauth.logout(
               () => {},
-              () => {}
+              (error) => {() => handleError(error)}
             )
           }
           title="Logout"

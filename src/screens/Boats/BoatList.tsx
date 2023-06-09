@@ -5,12 +5,9 @@ import {
   ActivityIndicator,
   RefreshControl,
   Dimensions,
-  Button,
 } from "react-native";
-import { net } from "react-native-force";
 import { StyleSheet, Image } from "react-native";
 import { Boat } from "../../models/boat";
-import { GET_BOATS_ENDPOINT } from "../../api/constants";
 import { MAX_RECORDS_PER_VIEW } from "../../api/constants";
 import BoatCard from "../../components/BoatCard";
 import { ProgressBar } from "react-native-paper";
@@ -90,14 +87,12 @@ const BoatList = ({
 
   return (
     <View style={styles.container}>
+      <BoatFilter {...{ boatType, setBoatType, refreshing, setRefreshing }} />
       <ImageModal {...{ showModal, setShowModal, modalPicture }} />
       {loading || refreshing ? (
         <ActivityIndicator color="blue" />
       ) : (
         <>
-          <BoatFilter
-            {...{ boatType, setBoatType, refreshing, setRefreshing }}
-          />
           <FlatList
             ref={flatListRef}
             data={state}

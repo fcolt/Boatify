@@ -49,7 +49,8 @@ const BoatFilter = ({ boatType, setBoatType, setRefreshing }: BoatFilterProps) =
 
 const styles = {
   chip: {
-    margin: 10
+    marginRight: 10,
+    marginLeft: 10
   },
 };
 

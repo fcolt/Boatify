@@ -1,5 +1,8 @@
 import React, { useEffect, useRef } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  createNavigationContainerRef,
+} from "@react-navigation/native";
 import HomePage from "../screens/Home/HomePage";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import AppBar from "../components/AppBar";
@@ -7,13 +10,27 @@ import BoatScreen from "../screens/Boats/BoatPage";
 import { Animated, Easing } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useTopScrollContext } from "../context/TopScrollContext";
+import NotFound from "../errors/NotFound";
+import ServerError from "../errors/ServerError";
+import Buggy from "../errors/Buggy";
+
+export const routes = {
+  homeScreen: "Home",
+  boatsScreen: "Boats",
+  notFoundScreen: "Not Found",
+  serverErrorScreen: "Server Error",
+  buggyScreen: "Buggy Screen"
+};
 
 const Tab = createBottomTabNavigator();
 
-const routes = {
-  homeScreen: "Home",
-  boatsScreen: "Boats",
-};
+export const navigationRef = createNavigationContainerRef();
+
+export function navigate(name: string) {
+  if (navigationRef.isReady()) {
+    navigationRef.navigate(name);
+  }
+}
 
 export default function BottomTabNavigation() {
   const shakeAnimation = useRef(new Animated.Value(0)).current;
@@ -55,7 +72,7 @@ export default function BottomTabNavigation() {
   }, []);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Tab.Navigator
         screenListeners={{ tabPress: (e) => startShake() }}
         initialRouteName={routes.homeScreen}
@@ -63,10 +80,16 @@ export default function BottomTabNavigation() {
           tabBarIcon: ({ focused, color, size }) => {
             let iconName = "";
 
-            if (route.name === routes.homeScreen) {
-              iconName = focused ? "home" : "home-outline";
-            } else if (route.name === routes.boatsScreen) {
-              iconName = focused ? "boat" : "boat-outline";
+            switch (route.name) {
+              case routes.homeScreen:
+                iconName = focused ? "home" : "home-outline";
+              break;
+              case routes.boatsScreen:
+                iconName = focused ? "boat" : "boat-outline";
+              break;
+              case routes.buggyScreen:
+                iconName = focused ? "md-bug" : "ios-bug-outline";
+              break;
             }
 
             return (
@@ -78,6 +101,15 @@ export default function BottomTabNavigation() {
           header: (props) => <AppBar {...props} />,
           tabBarActiveTintColor: "blue",
           tabBarInactiveTintColor: "gray",
+          //exclude error screens
+          tabBarButton: [
+            routes.notFoundScreen,
+            routes.serverErrorScreen,
+          ].includes(route.name)
+            ? () => {
+                return null;
+              }
+            : undefined,
         })}
       >
         <Tab.Screen name={routes.homeScreen} component={HomePage} />
@@ -88,6 +120,9 @@ export default function BottomTabNavigation() {
             tabPress: (e) => toTop(),
           }}
         />
+        <Tab.Screen name={routes.buggyScreen} component={Buggy} />
+        <Tab.Screen name={routes.notFoundScreen} component={NotFound} />
+        <Tab.Screen name={routes.serverErrorScreen} component={ServerError} />
       </Tab.Navigator>
     </NavigationContainer>
   );

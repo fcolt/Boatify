@@ -4,9 +4,39 @@ import { GET_BOATS_ENDPOINT, GET_BOAT_TYPES_ENDPOINT } from "./constants";
 import { QueryResult } from "../models/queryResult";
 import { User } from "../models/user";
 import { Boat } from "../models/boat";
+import Snackbar from "react-native-snackbar";
+import { navigate, routes } from "../components/BottomTabNavigation";
 
-const handleError = (err: Error) => {
-  console.log(err);
+export const handleError = (err: any) => {
+  switch (err.response.statusCode) {
+    case 400:
+      Snackbar.show({
+        text: 'Could not fetch some data...',
+        duration: Snackbar.LENGTH_SHORT,
+        backgroundColor: 'red'
+      });
+      break;
+    case 401:
+      Snackbar.show({
+        text: 'You are unauthorized to access the requested resource',
+        duration: Snackbar.LENGTH_SHORT,
+        backgroundColor: 'red'
+      });
+      break;
+    case 404:
+      navigate(routes.notFoundScreen);
+      break;
+    case 500:
+      navigate(routes.serverErrorScreen);
+      break;
+    default:
+      Snackbar.show({
+        text: 'Unknown error',
+        duration: Snackbar.LENGTH_SHORT,
+        backgroundColor: 'red'
+      });
+      break;
+  }
 }
 
 const requests = {

@@ -11,6 +11,7 @@ import { Portal, Modal, IconButton } from "react-native-paper";
 import { PlaceholderJpg } from "../../assets";
 import { useAuthContext } from "../context/AuthContext";
 import { ReactNativeZoomableView } from "@openspacelabs/react-native-zoomable-view";
+import Snackbar from "react-native-snackbar";
 
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const WINDOW_HEIGHT = Dimensions.get("window").height;
@@ -60,7 +61,11 @@ const ImageModal = ({
                     title: modalPicture,
                   });
                 } catch (err: any) {
-                  console.log(err.message);
+                  Snackbar.show({
+                    text: 'An error occured while sharing...',
+                    duration: Snackbar.LENGTH_SHORT,
+                    backgroundColor: 'red'
+                  })
                 }
               }}
             />
