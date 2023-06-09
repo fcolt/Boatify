@@ -28,7 +28,7 @@ export const navigationRef = createNavigationContainerRef();
 
 export function navigate(name: string) {
   if (navigationRef.isReady()) {
-    navigationRef.navigate(name);
+    navigationRef.navigate(name as never);
   }
 }
 

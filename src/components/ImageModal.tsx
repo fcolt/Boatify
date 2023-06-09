@@ -52,6 +52,7 @@ const ImageModal = ({
             </ReactNativeZoomableView>
             <IconButton
               icon="share"
+              iconColor="white"
               size={40}
               onPress={async () => {
                 try {
@@ -86,6 +87,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: 'rgba(0,0,0,0.7)',
   },
   image: {
     width: WINDOW_WIDTH,
