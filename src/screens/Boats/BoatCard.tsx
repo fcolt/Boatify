@@ -4,7 +4,7 @@ import React from "react";
 import { ORGANIZATION_URL, ROUTES as routes } from "../../api/constants";
 import { useAuthContext } from "../../context/AuthContext";
 import { StyleSheet, TouchableNativeFeedback } from "react-native";
-import { navigate } from "../../components/BottomTabNavigation";
+import { navigate } from "../../api/agent";
 
 interface BoatCardProps {
   item: Boat;

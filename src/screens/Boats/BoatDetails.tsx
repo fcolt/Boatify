@@ -3,16 +3,22 @@ import { Boat } from "../../models/boat";
 import React from "react";
 import { ORGANIZATION_URL } from "../../api/constants";
 import { useAuthContext } from "../../context/AuthContext";
-import { StyleSheet, TouchableNativeFeedback, View } from "react-native";
-import { RouteProp } from "@react-navigation/native";
+import { StyleSheet, View } from "react-native";
+import { ParamListBase, RouteProp } from "@react-navigation/native";
+import "intl";
+import "intl/locale-data/jsonp/en";
+import SoundPlayerComponent from "../../components/SoundPlayer";
 
 const BoatDetails = ({
   route,
 }: {
-  route: RouteProp<{ params: { item: Boat } }, "params">;
+  route:
+    | RouteProp<{ params: { item: Boat } }, "params">
+    | RouteProp<ParamListBase, string>;
 }) => {
   const { accessToken } = useAuthContext();
-  const { item } = route.params;
+  const { item } = route.params as { item: Boat };
+  const audioFilename = "sound" + (Math.floor(Math.random() * 7) + 1);
 
   return (
     <View>
@@ -45,9 +51,20 @@ const BoatDetails = ({
         </Card.Content>
         <Card.Content>
           <Text variant="titleLarge">Contact</Text>
-          <Text variant="bodyMedium">{item.Contact__r.Name}</Text>
+          <Text variant="bodyMedium">
+            {item.Contact__r.Name} - {item.Contact__r.Email}
+          </Text>
         </Card.Content>
       </Card>
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text>Listen to the majestic sounds of {item.Name}!</Text>
+      </View>
+      <SoundPlayerComponent {...{ audioFilename }} />
     </View>
   );
 };

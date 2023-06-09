@@ -1,8 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import {
-  NavigationContainer,
-  createNavigationContainerRef,
-} from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import HomePage from "../screens/Home/HomePage";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import AppBar from "../components/AppBar";
@@ -15,16 +12,9 @@ import ServerError from "../errors/ServerError";
 import Buggy from "../errors/Buggy";
 import { ROUTES as routes } from "../api/constants";
 import BoatDetails from "../screens/Boats/BoatDetails";
+import { navigationRef } from "../api/agent";
 
 const Tab = createBottomTabNavigator();
-
-export const navigationRef = createNavigationContainerRef();
-
-export function navigate(name: string, params?: any) {
-  if (navigationRef.isReady()) {
-    navigationRef.navigate({name, params} as never);
-  }
-}
 
 export default function BottomTabNavigation() {
   const shakeAnimation = useRef(new Animated.Value(0)).current;
@@ -99,7 +89,7 @@ export default function BottomTabNavigation() {
           tabBarButton: [
             routes.notFoundScreen,
             routes.serverErrorScreen,
-            routes.boatDetailsScreen
+            routes.boatDetailsScreen,
           ].includes(route.name)
             ? () => {
                 return null;

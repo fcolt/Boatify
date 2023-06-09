@@ -5,8 +5,16 @@ import { QueryResult } from "../models/queryResult";
 import { User } from "../models/user";
 import { Boat } from "../models/boat";
 import Snackbar from "react-native-snackbar";
-import { navigate } from "../components/BottomTabNavigation";
 import { ROUTES as routes } from "./constants";
+import { createNavigationContainerRef } from "@react-navigation/native";
+
+export const navigationRef = createNavigationContainerRef();
+
+export function navigate(name: string, params?: any) {
+  if (navigationRef.isReady()) {
+    navigationRef.navigate({ name, params } as never);
+  }
+}
 
 export const handleError = (err: any) => {
   switch (err.response.statusCode) {
@@ -36,7 +44,7 @@ export const handleError = (err: any) => {
         duration: Snackbar.LENGTH_SHORT,
         backgroundColor: 'red'
       });
-      break;
+    break;
   }
 }
 
@@ -76,7 +84,11 @@ const Boats = {
     offset: number,
     successCB: ExecSuccessCallback<QueryResult<Boat>>
   ) => requests.queryGet(
-    `SELECT Name, Description__c, Picture__c FROM Boat__c LIMIT ${noOfBoats} OFFSET ${offset}`,
+    `SELECT 
+      Name, Description__c, Picture__c, 
+      BoatType__r.Name, Contact__r.Name,
+      Contact__r.Email, Price__c, Length__c
+    FROM Boat__c LIMIT ${noOfBoats} OFFSET ${offset}`,
     successCB
   ),
   getPaginatedBoats: (
