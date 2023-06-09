@@ -1,9 +1,10 @@
 import { Button, Card, Text } from "react-native-paper";
-import { Boat } from "../models/boat";
+import { Boat } from "../../models/boat";
 import React from "react";
-import { ORGANIZATION_URL } from "../api/constants";
-import { useAuthContext } from "../context/AuthContext";
+import { ORGANIZATION_URL, ROUTES as routes } from "../../api/constants";
+import { useAuthContext } from "../../context/AuthContext";
 import { StyleSheet, TouchableNativeFeedback } from "react-native";
+import { navigate } from "../../components/BottomTabNavigation";
 
 interface BoatCardProps {
   item: Boat;
@@ -26,12 +27,15 @@ const BoatCard = ({ item, setShowModal, setModalPicture }: BoatCardProps) => {
           source={{
             uri: ORGANIZATION_URL + item.Picture__c,
             headers: {
-              Authorization: `Bearer ${accessToken}`
+              Authorization: `Bearer ${accessToken}`,
             },
           }}
         />
       </TouchableNativeFeedback>
-      <TouchableNativeFeedback onPress={() => {}} style={{ marginTop: 15 }}>
+      <TouchableNativeFeedback
+        onPress={() => navigate(routes.boatDetailsScreen, { item })}
+        style={{ marginTop: 15 }}
+      >
         <Card.Content>
           <Text
             variant="titleLarge"
@@ -47,7 +51,12 @@ const BoatCard = ({ item, setShowModal, setModalPicture }: BoatCardProps) => {
             <Button onPress={() => console.log("pressed")}>
               Rate this boat
             </Button>
-            <Button style={{ marginLeft: "auto", marginTop: 25, marginBottom: 25 }}>Details</Button>
+            <Button
+              style={{ marginLeft: "auto", marginTop: 25, marginBottom: 25 }}
+              onPress={() => navigate(routes.boatDetailsScreen, { item })}
+            >
+              Details
+            </Button>
           </Card.Actions>
         </Card.Content>
       </TouchableNativeFeedback>

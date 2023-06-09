@@ -9,7 +9,7 @@ import {
 import { StyleSheet, Image } from "react-native";
 import { Boat } from "../../models/boat";
 import { MAX_RECORDS_PER_VIEW } from "../../api/constants";
-import BoatCard from "../../components/BoatCard";
+import BoatCard from "./BoatCard";
 import { ProgressBar } from "react-native-paper";
 import { PlaceholderJpg } from "../../../assets";
 import ImageModal from "../../components/ImageModal";

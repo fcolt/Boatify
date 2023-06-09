@@ -5,6 +5,7 @@ export const MAX_RECORDS_PER_VIEW = 10;
 export const ROUTES = {
   homeScreen: "Home",
   boatsScreen: "Boats",
+  boatDetailsScreen: "Boat Details",
   notFoundScreen: "Not Found",
   serverErrorScreen: "Server Error",
   buggyScreen: "Buggy Screen"

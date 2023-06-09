@@ -14,14 +14,15 @@ import NotFound from "../errors/NotFound";
 import ServerError from "../errors/ServerError";
 import Buggy from "../errors/Buggy";
 import { ROUTES as routes } from "../api/constants";
+import BoatDetails from "../screens/Boats/BoatDetails";
 
 const Tab = createBottomTabNavigator();
 
 export const navigationRef = createNavigationContainerRef();
 
-export function navigate(name: string) {
+export function navigate(name: string, params?: any) {
   if (navigationRef.isReady()) {
-    navigationRef.navigate(name as never);
+    navigationRef.navigate({name, params} as never);
   }
 }
 
@@ -98,6 +99,7 @@ export default function BottomTabNavigation() {
           tabBarButton: [
             routes.notFoundScreen,
             routes.serverErrorScreen,
+            routes.boatDetailsScreen
           ].includes(route.name)
             ? () => {
                 return null;
@@ -113,6 +115,7 @@ export default function BottomTabNavigation() {
             tabPress: (e) => toTop(),
           }}
         />
+        <Tab.Screen name={routes.boatDetailsScreen} component={BoatDetails} />
         <Tab.Screen name={routes.buggyScreen} component={Buggy} />
         <Tab.Screen name={routes.notFoundScreen} component={NotFound} />
         <Tab.Screen name={routes.serverErrorScreen} component={ServerError} />
