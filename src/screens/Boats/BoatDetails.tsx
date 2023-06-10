@@ -3,7 +3,7 @@ import { Boat } from "../../models/boat";
 import React from "react";
 import { ORGANIZATION_URL } from "../../api/constants";
 import { useAuthContext } from "../../context/AuthContext";
-import { StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { ParamListBase, RouteProp } from "@react-navigation/native";
 import "intl";
 import "intl/locale-data/jsonp/en";
@@ -21,7 +21,16 @@ const BoatDetails = ({
   const audioFilename = "sound" + (Math.floor(Math.random() * 7) + 1);
 
   return (
-    <View>
+    <ScrollView>
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text>Listen to the majestic sounds of {item.Name}!</Text>
+      </View>
+      <SoundPlayerComponent {...{ audioFilename }} />
       <Card style={styles.container}>
         <Card.Cover
           source={{
@@ -56,16 +65,7 @@ const BoatDetails = ({
           </Text>
         </Card.Content>
       </Card>
-      <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text>Listen to the majestic sounds of {item.Name}!</Text>
-      </View>
-      <SoundPlayerComponent {...{ audioFilename }} />
-    </View>
+    </ScrollView>
   );
 };
 

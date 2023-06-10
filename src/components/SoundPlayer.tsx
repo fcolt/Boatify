@@ -33,9 +33,19 @@ const SoundPlayerComponent = ({ audioFilename }: SoundPlayerComponentProps) => {
       setIsPlaying(false);
       setCurrentTime(0);
     });
+    const interval = setInterval(() => {
+      if (isPlaying) {
+        SoundPlayer.getInfo().then((info) => {
+          setCurrentTime(info.currentTime);
+        });
+      }
+    }, 0);
     if (isPlaying) {
       getInfo();
-    } 
+    }
+    return () => {
+      clearInterval(interval);
+    };
   }, [isPlaying]);
 
   const togglePlayback = () => {
@@ -60,19 +70,6 @@ const SoundPlayerComponent = ({ audioFilename }: SoundPlayerComponentProps) => {
     setCurrentTime(value);
     SoundPlayer.seek(value);
   };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (isPlaying) {
-        SoundPlayer.getInfo().then((info) => {
-          setCurrentTime(info.currentTime);
-        });
-      }
-    }, 0);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [isPlaying]);
 
   return (
     <View>
