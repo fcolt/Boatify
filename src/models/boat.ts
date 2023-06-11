@@ -1,4 +1,5 @@
 export interface Boat {
+	Id: string;
 	attributes: Attributes;
 	Name: string;
 	Description__c: string;

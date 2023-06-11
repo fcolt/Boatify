@@ -1,9 +1,10 @@
 import { net } from "react-native-force";
 import { ExecSuccessCallback } from "react-native-force/dist/react.force.common";
-import { GET_BOATS_ENDPOINT, GET_BOAT_TYPES_ENDPOINT } from "./constants";
+import { GET_ALL_REVIEWS_ENDPOINT, GET_BOATS_ENDPOINT, GET_BOAT_TYPES_ENDPOINT } from "./constants";
 import { QueryResult } from "../models/queryResult";
 import { User } from "../models/user";
 import { Boat } from "../models/boat";
+import { Review } from "../models/review";
 import Snackbar from "react-native-snackbar";
 import { ROUTES as routes } from "./constants";
 import { createNavigationContainerRef } from "@react-navigation/native";
@@ -44,7 +45,7 @@ export const handleError = (err: any) => {
         duration: Snackbar.LENGTH_SHORT,
         backgroundColor: 'red'
       });
-    break;
+      break;
   }
 }
 
@@ -85,7 +86,7 @@ const Boats = {
     successCB: ExecSuccessCallback<QueryResult<Boat>>
   ) => requests.queryGet(
     `SELECT 
-      Name, Description__c, Picture__c, 
+      Id, Name, Description__c, Picture__c, 
       BoatType__r.Name, Contact__r.Name,
       Contact__r.Email, Price__c, Length__c
     FROM Boat__c LIMIT ${noOfBoats} OFFSET ${offset}`,
@@ -102,9 +103,30 @@ const Boats = {
   )
 }
 
+const Reviews = {
+  postReview: (fields: Record<string, unknown>, successCB: ExecSuccessCallback<string>) => {
+    net.create(
+      "BoatReview__c",
+      fields,
+      successCB,
+      (err) => handleError(err)
+    )
+  },
+  getPaginatedReviews: (
+    boatId: string,
+    maxRecords: number,
+    offset: number,
+    successCB: ExecSuccessCallback<string>
+  ) => requests.get(
+    `${GET_ALL_REVIEWS_ENDPOINT}?boatId=${boatId}&maxRecords=${maxRecords}&offset=${offset}`,
+    successCB
+  )
+}
+
 const agent = {
   UserAccount,
-  Boats
+  Boats,
+  Reviews
 }
 
 export default agent;

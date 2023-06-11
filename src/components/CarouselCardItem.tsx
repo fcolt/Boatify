@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Dimensions, Image, TouchableWithoutFeedback } f
 import { ORGANIZATION_URL, ROUTES as routes } from "../api/constants";
 import { Boat } from "../models/boat";
 import { navigate } from "../api/agent";
+import { useReviewDialogContext } from "../context/ReviewDialogContext";
 
 export const SLIDER_WIDTH = Dimensions.get("window").width + 80;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
@@ -14,8 +15,10 @@ interface Props {
 }
 
 const CarouselCardItem = ({ item, index, authToken }: Props) => {
+  const { setShowRateDialog } = useReviewDialogContext();
+
   return (
-    <TouchableWithoutFeedback onPress={() => navigate(routes.boatDetailsScreen, { item })}>
+    <TouchableWithoutFeedback onPress={() => navigate(routes.boatDetailsScreen, { item, setShowRateDialog })}>
       <View style={styles.container} key={index}>
         <Image
           source={{

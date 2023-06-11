@@ -18,27 +18,27 @@ const WINDOW_HEIGHT = Dimensions.get("window").height;
 const PLACEHOLDER_MODAL_IMAGE = Image.resolveAssetSource(PlaceholderJpg).uri;
 
 interface ImageModalProps {
-  showModal: boolean;
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  showImageModal: boolean;
+  setShowImageModal: React.Dispatch<React.SetStateAction<boolean>>;
   modalPicture: string;
 }
 
 const ImageModal = ({
-  showModal,
-  setShowModal,
+  showImageModal,
+  setShowImageModal,
   modalPicture,
 }: ImageModalProps) => {
   const { accessToken } = useAuthContext();
   return (
     <Portal>
       <Modal
-        visible={showModal}
-        onDismiss={() => setShowModal(false)}
+        visible={showImageModal}
+        onDismiss={() => setShowImageModal(false)}
         style={styles.modalContainer}
       >
-        <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
+        <TouchableWithoutFeedback onPress={() => setShowImageModal(false)}>
           <View style={styles.modalContainer}>
-            <ReactNativeZoomableView onSingleTap={() => setShowModal(false)}>
+            <ReactNativeZoomableView onSingleTap={() => setShowImageModal(false)}>
               <Image
                 style={styles.image}
                 defaultSource={{ uri: PLACEHOLDER_MODAL_IMAGE }}

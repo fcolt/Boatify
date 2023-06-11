@@ -1,27 +1,59 @@
 import { Button, Card, Text } from "react-native-paper";
 import { Boat } from "../../models/boat";
-import React from "react";
+import React, { useState } from "react";
 import { ORGANIZATION_URL } from "../../api/constants";
 import { useAuthContext } from "../../context/AuthContext";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { ParamListBase, RouteProp } from "@react-navigation/native";
 import "intl";
 import "intl/locale-data/jsonp/en";
 import SoundPlayerComponent from "../../components/SoundPlayer";
+import ReviewList from "./ReviewList";
 
-const BoatDetails = ({
-  route,
-}: {
+interface BoatDetailsProps {
   route:
-    | RouteProp<{ params: { item: Boat } }, "params">
+    | RouteProp<
+        {
+          params: {
+            item: Boat;
+            setShowRateDialog: React.Dispatch<
+              React.SetStateAction<{
+                show: boolean;
+                item: Boat;
+              }>
+            >;
+          };
+        },
+        "params"
+      >
     | RouteProp<ParamListBase, string>;
-}) => {
+}
+
+const BoatDetails = ({ route }: BoatDetailsProps) => {
+  const [refreshing, setRefreshing] = useState(true);
   const { accessToken } = useAuthContext();
   const { item } = route.params as { item: Boat };
+  const { setShowRateDialog } = route.params as {
+    setShowRateDialog: React.Dispatch<
+      React.SetStateAction<{
+        show: boolean;
+        item: Boat;
+      }>
+    >;
+  };
+  console.log(route.params);
   const audioFilename = "sound" + (Math.floor(Math.random() * 7) + 1);
 
   return (
-    <ScrollView>
+    <ScrollView
+      refreshControl={
+        <RefreshControl
+          colors={["blue"]}
+          refreshing={refreshing}
+          onRefresh={() => setRefreshing(true)}
+        />
+      }
+    >
       <View
         style={{
           justifyContent: "center",
@@ -65,6 +97,14 @@ const BoatDetails = ({
           </Text>
         </Card.Content>
       </Card>
+      <ReviewList {...{ item, refreshing, setRefreshing }} />
+      <Button
+        mode="contained"
+        style={{ marginLeft: 15, marginRight: 15 }}
+        onPress={() => setShowRateDialog({ show: true, item: item })}
+      >
+        Add a Review
+      </Button>
     </ScrollView>
   );
 };

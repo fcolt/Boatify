@@ -16,6 +16,8 @@ import ImageModal from "../../components/ImageModal";
 import BoatFilter from "./BoatFilter";
 import { useTopScrollContext } from "../../context/TopScrollContext";
 import agent from "../../api/agent";
+import RateModal from "./RateDialog";
+import { useReviewDialogContext } from "../../context/ReviewDialogContext";
 
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const WINDOW_HEIGHT = Dimensions.get("window").height;
@@ -37,7 +39,8 @@ const BoatList = ({
   const [state, setState] = useState<Boat[]>();
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const { showRateDialog, setShowRateDialog } = useReviewDialogContext();
   const [modalPicture, setModalPicture] = useState(PLACEHOLDER_MODAL_IMAGE);
   const [endReached, setEndReached] = useState(false);
   const previousBoats = useRef<Boat[]>();
@@ -88,7 +91,8 @@ const BoatList = ({
   return (
     <View style={styles.container}>
       <BoatFilter {...{ boatType, setBoatType, refreshing, setRefreshing }} />
-      <ImageModal {...{ showModal, setShowModal, modalPicture }} />
+      <ImageModal {...{ showImageModal, setShowImageModal, modalPicture }} />
+      <RateModal {...{ showRateDialog, setShowRateDialog }} />
       {loading || refreshing ? (
         <ActivityIndicator color="blue" />
       ) : (
@@ -97,9 +101,9 @@ const BoatList = ({
             ref={flatListRef}
             data={state}
             renderItem={({ item }) => (
-              <>
-                <BoatCard {...{ item, setShowModal, setModalPicture }} />
-              </>
+              <View>
+                <BoatCard {...{ item, setShowImageModal, setModalPicture, setShowRateDialog }} />
+              </View>
             )}
             keyExtractor={(_, index) => "key_" + index}
             onEndReached={() => {

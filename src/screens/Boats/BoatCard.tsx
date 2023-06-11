@@ -8,18 +8,29 @@ import { navigate } from "../../api/agent";
 
 interface BoatCardProps {
   item: Boat;
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowImageModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowRateDialog: React.Dispatch<
+    React.SetStateAction<{
+      show: boolean;
+      item: Boat;
+    }>
+  >;
   setModalPicture: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const BoatCard = ({ item, setShowModal, setModalPicture }: BoatCardProps) => {
+const BoatCard = ({
+  item,
+  setShowImageModal,
+  setModalPicture,
+  setShowRateDialog,
+}: BoatCardProps) => {
   const { accessToken } = useAuthContext();
 
   return (
     <Card style={styles.container}>
       <TouchableNativeFeedback
         onPress={() => {
-          setShowModal(true);
+          setShowImageModal(true);
           setModalPicture(ORGANIZATION_URL + item.Picture__c);
         }}
       >
@@ -33,7 +44,7 @@ const BoatCard = ({ item, setShowModal, setModalPicture }: BoatCardProps) => {
         />
       </TouchableNativeFeedback>
       <TouchableNativeFeedback
-        onPress={() => navigate(routes.boatDetailsScreen, { item })}
+        onPress={() => navigate(routes.boatDetailsScreen, { item, setShowRateDialog })}
         style={{ marginTop: 15 }}
       >
         <Card.Content>
@@ -48,12 +59,14 @@ const BoatCard = ({ item, setShowModal, setModalPicture }: BoatCardProps) => {
             {item.Description__c}
           </Text>
           <Card.Actions>
-            <Button onPress={() => console.log("pressed")}>
+            <Button
+              onPress={() => setShowRateDialog({ show: true, item: item })}
+            >
               Rate this boat
             </Button>
             <Button
               style={{ marginLeft: "auto", marginTop: 25, marginBottom: 25 }}
-              onPress={() => navigate(routes.boatDetailsScreen, { item })}
+              onPress={() => navigate(routes.boatDetailsScreen, { item, setShowImageModal })}
             >
               Details
             </Button>
@@ -68,10 +81,6 @@ const styles = StyleSheet.create({
   container: {
     alignContent: "center",
     margin: 15,
-  },
-  modalContainer: {
-    backgroundColor: "white",
-    padding: 20,
   },
 });
 
