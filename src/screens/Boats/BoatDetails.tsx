@@ -1,6 +1,6 @@
 import { Button, Card, Text } from "react-native-paper";
 import { Boat } from "../../models/boat";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ORGANIZATION_URL } from "../../api/constants";
 import { useAuthContext } from "../../context/AuthContext";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
@@ -30,7 +30,7 @@ interface BoatDetailsProps {
 }
 
 const BoatDetails = ({ route }: BoatDetailsProps) => {
-  const [refreshing, setRefreshing] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const { accessToken } = useAuthContext();
   const { item } = route.params as { item: Boat };
   const { setShowRateDialog } = route.params as {
@@ -41,7 +41,11 @@ const BoatDetails = ({ route }: BoatDetailsProps) => {
       }>
     >;
   };
-  console.log(route.params);
+
+  useEffect(() => {
+    setRefreshing(true);
+  }, [route]);
+  
   const audioFilename = "sound" + (Math.floor(Math.random() * 7) + 1);
 
   return (

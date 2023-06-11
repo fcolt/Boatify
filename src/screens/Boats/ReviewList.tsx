@@ -1,19 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  ActivityIndicator,
-  Button,
-  Card,
-  List,
-  ProgressBar,
-  Text,
-} from "react-native-paper";
-import { StyleSheet, View } from "react-native";
+import { ActivityIndicator, Card, List, Text } from "react-native-paper";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
 import { Review } from "../../models/review";
 import agent from "../../api/agent";
 import { Boat } from "../../models/boat";
 import { MAX_RECORDS_PER_VIEW } from "../../api/constants";
 import { useAuthContext } from "../../context/AuthContext";
 import StarRating from "react-native-star-rating-widget";
+import RenderHtml from "react-native-render-html";
 
 interface ReviewListProps {
   item: Boat;
@@ -26,6 +20,7 @@ const ReviewList = ({ item, refreshing, setRefreshing }: ReviewListProps) => {
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(true);
   const { accessToken } = useAuthContext();
+  const { height, width } = useWindowDimensions();
 
   const fetchData = (maxRecords: number, offset: number) => {
     agent.Reviews.getPaginatedReviews(item.Id, maxRecords, offset, (res) => {
@@ -73,7 +68,10 @@ const ReviewList = ({ item, refreshing, setRefreshing }: ReviewListProps) => {
                   title={review.Name}
                   description={() => (
                     <View>
-                      <Text>{review.Comment__c}</Text>
+                      <RenderHtml
+                        source={{ html: review.Comment__c }}
+                        contentWidth={width}
+                      />
                       <StarRating
                         rating={review.Rating__c}
                         enableSwiping={false}
