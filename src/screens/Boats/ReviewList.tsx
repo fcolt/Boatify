@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Card, List, Text } from "react-native-paper";
 import { StyleSheet, View, useWindowDimensions } from "react-native";
 import { Review } from "../../models/review";

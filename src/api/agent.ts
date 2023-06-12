@@ -4,7 +4,6 @@ import { GET_ALL_REVIEWS_ENDPOINT, GET_BOATS_ENDPOINT, GET_BOAT_TYPES_ENDPOINT }
 import { QueryResult } from "../models/queryResult";
 import { User } from "../models/user";
 import { Boat } from "../models/boat";
-import { Review } from "../models/review";
 import Snackbar from "react-native-snackbar";
 import { ROUTES as routes } from "./constants";
 import { createNavigationContainerRef } from "@react-navigation/native";
